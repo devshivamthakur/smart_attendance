@@ -1,5 +1,5 @@
 import React, { Component,useRef } from 'react'
-import { SafeAreaView, StyleSheet, Text, View,Image, Button,FlatList, ToastAndroid,Pressable,ScrollView,RefreshControl } from 'react-native'
+import { SafeAreaView, StyleSheet, Text, View,Image, ImageBackground,Pressable } from 'react-native'
 import { Card } from 'react-native-shadow-cards';
 
 
@@ -9,21 +9,25 @@ export default class dashboard_hod extends Component {
        this.drawer=null;
      }
  
-
+      
     render() {
-      const { replace } = this.props.navigation;
 
         return (
-            <SafeAreaView
+            <ImageBackground
+            source={require("../../../images/img_bg.png")}
+            style={{
+                width:"100%",
+                height:"100%",
+                flex: 1, 
+            }}
+            width="100%"
+            height="100%"
             >
                
                  <SafeAreaView
-            style={styles.main_container}  
+            style={styles.main_container}
+              
             >
-                 <Image
-                    style={styles.img_logo}
-                    source={{uri:"https://github.com/itsprogrammingwithme/myproject/blob/master/img_main_logo.jpeg?raw=true"}}
-                    />
                      
                         <Card  // contain all card (attendance,show today attendance)
                         style={styles.Card}
@@ -44,9 +48,9 @@ export default class dashboard_hod extends Component {
                                marginLeft:10,
                                flex:1
                            }}      
-                    //    onPress={()=>{
-                    //        this.props.navigation.replace("addnh");
-                    //    }}
+                       onPress={()=>{
+                           this.props.navigation.replace("class_branch");
+                       }}
                        >
                          <Card   // attendance View
                     style={styles.card_defi1}
@@ -145,7 +149,7 @@ export default class dashboard_hod extends Component {
 
                
                  </SafeAreaView>
-                 </SafeAreaView>
+                 </ImageBackground>
          )
     }
 }
@@ -153,13 +157,13 @@ const styles=StyleSheet.create(
     {
        Card:{
            alignSelf:'center',
-           backgroundColor:'#fafafa',
+           backgroundColor:'rgba(52, 52, 52, 0.6)',
            borderRadius:18,
            paddingLeft:7,
           justifyContent:'center',
-           marginTop:"15%",
+        //    marginTop:"15%",
            elevation:20,
-        height:"45%",
+        height:"50%",
        },
    
        txt:{
@@ -171,15 +175,11 @@ const styles=StyleSheet.create(
           alignSelf:'center'
        },
        main_container:{
-           backgroundColor:"#2b88d8",
+        flex: 1,
            height:"100%",
-        //    padding:50,
+        justifyContent:'center',
        },
      
-
-
-    
-
    img_logo:{
     resizeMode: "cover",
        width:"100%",

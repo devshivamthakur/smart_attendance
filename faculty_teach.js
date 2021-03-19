@@ -12,7 +12,6 @@ import { useRef } from 'react';
 import NetworkUtils from './NetworkUtils';
 import ProgressDialog from 'react-native-progress-dialog';
 import dashboard from './component/faculty/teacher/dashboard';
-import dashboard_hod from "./component/faculty/hod/dashboard_hod";
 
 // const drawer;
 const Stack=createStackNavigator();

@@ -16,7 +16,11 @@ const Stack=createStackNavigator();
   state={
     loading:true
   }
-
+componentWillUnmount(){
+  this.setState({
+    loading:true
+  })
+}
    constructor(args){
      super(args)
     setTimeout(()=>{
@@ -31,7 +35,7 @@ const Stack=createStackNavigator();
     return(
               <ImageBackground 
               source={require("./images/main_logo.jpg")}
-              resizeMode="contain"
+              resizeMode="stretch"
               style={{
                 // flex:1,
                 // alignSelf:"center",

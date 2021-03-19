@@ -6,13 +6,13 @@ import  Icon  from 'react-native-vector-icons/Ionicons';
 import  Icon2  from 'react-native-vector-icons/MaterialIcons';
 import  Icon4  from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage  from "@react-native-community/async-storage";  
-import { Avatar } from 'react-native-paper';
 
 import { useRef } from 'react';
 import NetworkUtils from './NetworkUtils';
 import ProgressDialog from 'react-native-progress-dialog';
-import dashboard from './component/faculty/teacher/dashboard';
 import dashboard_hod from "./component/faculty/hod/dashboard_hod";
+import class_branch from "./component/faculty/class_branch";
+import takeattendance from './component/faculty/takeattendance';
 
 // const drawer;
 const Stack=createStackNavigator();
@@ -23,36 +23,17 @@ export class faculty_hod extends Component {
     this.drawer=null;
   } 
   state={
-    visible:false,
-    drawer:"",
-    location:"bhopal",
-    name:"SHIVAM KUMAR",
-    branch:"CSE",
+
+    name:"",
+    branch:"",
     progress_visible:false,
-    profile_uri:null,
-    initialRouteName:"dashboard",
-    verified:false
+ 
   }
   initialize_drawer(){
     const drawer1=useRef(null);
    this. drawer=drawer1;
    }
 
-   componentWillUnmount(){
-
-    this.setState({
-      visible:false,
-      drawer:"",
-      location:"bhopal",
-      name:"",
-      survey_reg_id:"",
-      progress_visible:false,
-      profile_uri:null,
-      initialRouteName:"dashboard",
-      verified:false
-    })
-
-   }
    navigation_view_drawer=()=>(
     <View
     style={{
@@ -87,7 +68,6 @@ export class faculty_hod extends Component {
     >
       <Text style={styles.txt_drawer} >Name:</Text>
       <Text style={styles.txt_drawer} > {this.state.name} </Text>
-      <Icon2 name="verified" size={this.state.verified?20:0} color="yellow"  />
     </View>
     <View
     style={{
@@ -112,17 +92,9 @@ export class faculty_hod extends Component {
        />
      <Text style={styles.txt5} > Profile </Text>
     </Pressable>
-    <View
-    style={{
-      flexDirection:"row",
-      marginLeft:10
-    }}
-    >
-     <Icon2  name="contact-support" color="black" size={25}  style={{marginTop:4}}/>
-     <Text style={styles.txt5}> Support </Text>
-    </View>
    
-    <View
+   
+    <Pressable
     style={{
      flexDirection:"row",
     position: 'absolute',
@@ -153,7 +125,7 @@ export class faculty_hod extends Component {
         width:"85%"
       }}
       >Logout</Text>
-    </View>
+    </Pressable>
   
     </View>
   )
@@ -167,29 +139,28 @@ componentWillUnmount(){
       name:"",
       branch:"",
       // initialRouteName:"dashboard"
+      progress_visible:false,
     }
   )
 }
 
 
   //getting survey details like name,survey registration details 
- async get_survey_details(){
+ async get_hod_details(){
   
   this.setState(
     {
-      survey_reg_id:await AsyncStorage.getItem("survey_reg_id"),
+      hod_id:await AsyncStorage.getItem("hod_id"),
     }
   )
   const isConnected = await NetworkUtils.isNetworkAvailable();
   // const isConnected =false;
   if(isConnected){
-      var servey_id=await AsyncStorage.getItem("servey_id");
-      // console.log("id"+servey_id);
-      // var insertAPIURL="https://unimportuned-dozens.000webhostapp.com//faculty_hod_db/get_all_survey_data.php";
-      var  insertAPIURL="http://government.crtd.in/android/phpdb/faculty_hod_db/get_all_survey_data.php";
+      var hod_id=await AsyncStorage.getItem("hod_id");
+
+       var  insertAPIURL="https://lit-citadel-01961.herokuapp.com/hod_info";
 
       var header={
-        'Accept':'application/json',
         'Content-Type':'application/json'
       };
       
@@ -198,18 +169,28 @@ componentWillUnmount(){
           headers:header,
           body:JSON.stringify({
 
-              servey_id: Number(servey_id),
+            hod_id: Number(hod_id),
           })
       }
       ).then((response)=>response.json())
       .then((response)=>{
-            // console.log(response)
-            if(response[0]!="not"){
+            console.log(response)
+            this.setState({
+              progress_visible:false
+            })
+             console.log("SDF "+response.value[0].name)
+            if(response.length!=0){
 
+              this.setState(
+                {
+                  name:response.value[0].name,
+                  branch:response.value[0].branch
+                }
+              )
          
             }
       }).catch((error)=>{
-          // console.log(error)
+          console.log(error)
           this.setState({
             progress_visible:false
           })
@@ -225,32 +206,18 @@ componentWillUnmount(){
   //logout 
   logout_fun(){
    
-            this.props.navigation.replace("Login");
+           this.props.navigation.replace("Login");
   }
 
   componentDidMount(){
-    // this.setState({
-    //   progress_visible:true
-    // })
-    // this.get_survey_details()
+    this.setState({
+      progress_visible:true
+    })
+    this.get_hod_details()
   }
  
   //side menu and icon
-side_menu =()=>{
-  let _menu = null;
-  return(
-      <View
-      style={{
-        flexDirection:'row',
-      //   backgroundColor:'red',
-      margin:5   
-      }}
-      >
-        <Avatar.Image size={50} source={require("./images/main_logo.jpg")} onTouchStart={()=>{this.refs['DRAWER'].openDrawer();}} />
-     
-     </View>   
-  );
-}
+
 
  
     left_menu=()=>{
@@ -278,7 +245,7 @@ side_menu =()=>{
              ref={'DRAWER'}
             drawerPosition={"left"}
             renderNavigationView={this.navigation_view_drawer}
-            
+            style={{ flex: 1 }}
             >
                <ProgressDialog visible={this.state.progress_visible} />
             <NavigationContainer
@@ -286,14 +253,13 @@ side_menu =()=>{
            >
               <Stack.Navigator
               initialRouteName="dashboard_fc"
-              
               >
                    
                   <Stack.Screen
                   name="dashboard_fc"
                   component={dashboard_hod}
+                  
                   options={{
-                    headerRight:()=>(<this.side_menu/>),
                     headerStyle:{
                       backgroundColor:'#005a9e'
                     },
@@ -303,12 +269,35 @@ side_menu =()=>{
                       width:100,
                       fontSize:16
                     },
+                    title:"Dashboard",
                     headerLeft:()=>(<this.left_menu/>),
                     
                   }}
                   />
                   
-             
+                  <Stack.Screen
+                  name="class_branch"
+                  component={class_branch}
+                  options={{
+                    title:"Class and Branch",
+                    headerStyle:{
+                      backgroundColor:'#bc5100'
+                    },
+                    headerTitleStyle:{
+                      fontWeight:'bold',
+                      color:"white",
+                      // width:100,
+                      fontSize:16
+                    },
+                  }}
+                  />
+                 
+                  <Stack.Screen
+                  name="take_at"
+                  component={takeattendance}
+                   />
+
+
               </Stack.Navigator>
              
            </NavigationContainer>

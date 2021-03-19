@@ -58,7 +58,7 @@ class login extends React.Component{
     })
 
     var  insertAPIURL;
-   insertAPIURL="https://smartattedence.azurewebsites.net/"+this.state.selected_login_type;
+   insertAPIURL="https://lit-citadel-01961.herokuapp.com/"+this.state.selected_login_type;
 
    console.log(insertAPIURL);
     var header={
@@ -67,7 +67,7 @@ class login extends React.Component{
     
     fetch(insertAPIURL,{
       method:'POST',
-      headers:header,
+      headers:header, 
       body:JSON.stringify({
         uname:this.state.get_user_name,
         password:this.state.get_user_pass,
@@ -80,7 +80,9 @@ class login extends React.Component{
     this.setState({
       progress_visible:false
     })
-     console.log(response.mess)
+    if(response!=null){
+    
+     console.log(response)
      if(response.mess=="matched"){
         //  console.log("servey_id"+response[0].servey_id);
          
@@ -100,8 +102,10 @@ class login extends React.Component{
        ToastAndroid.show("Username and Password doesn't match",ToastAndroid.LONG);
      }
     }
+  }
     ).catch((error)=>{
       ToastAndroid.show(error,ToastAndroid.SHORT);
+      console.log(error)
       this.setState({
         progress_visible:false
       })
@@ -110,6 +114,8 @@ class login extends React.Component{
   } 
 
    } catch (error) {
+    console.log(error)
+
     ToastAndroid.show(error,ToastAndroid.SHORT);
     this.setState({
       progress_visible:false
