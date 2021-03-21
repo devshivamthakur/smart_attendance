@@ -70,9 +70,9 @@ export default class dashboard_hod extends Component {
                                marginLeft:10,
                                flex:1
                            }}      
-                    //    onPress={()=>{
-                    //        this.props.navigation.replace("addnh");
-                    //    }}
+                       onPress={()=>{
+                           this.props.navigation.navigate("show_att");
+                       }}
                        >
                          <Card   // today attendance View
                     style={styles.card_defi1}

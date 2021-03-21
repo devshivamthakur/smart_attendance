@@ -4,10 +4,10 @@ import {Surface,Avatar,Searchbar} from 'react-native-paper';
 import { BackHandler } from 'react-native';
 import NetworkUtils from './../../NetworkUtils';
 import ProgressDialog from 'react-native-progress-dialog';
-import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
+import RadioForm from 'react-native-simple-radio-button';
 import { Button} from 'react-native-paper';
 
-export class take_attendance extends Component {
+export class show_attendance1 extends Component {
 
     constructor(args){
         super(args)
@@ -25,140 +25,40 @@ export class take_attendance extends Component {
          data:[],
          branch_id:"",
          sem_id:"",
+         attendance_status:""
 
     }
     back(){
-        this.props.navigation.replace('dashboard_fc')
+        this.props.navigation.replace('show_att')
     }
-    async submit(){
-     
-
-       const isConnected=await NetworkUtils.isNetworkAvailable();
-
-          var tag=this.props.route.params.tag;
-                if(tag=="MIT_Student_info"){
-                    tag="MIT_Student_attendance";
-
-                }else{
-                    tag="MITS_Student_attendance";
-
-                }
-          console.log( "sdfsd55'"+tag );
-          console.log( tag );
-          var st=new Date();
-          var day= String( st.getDate());  
-          var month=String( st.getMonth()+1 );  
-          var year= String(st.getFullYear()); 
-          if(month.length==1){
-              month="0"+month;
-          }
-          if(day.length==1){
-              day="0"+day;
-          }
-    //   //  var start_date=day+"/"+month+"/"+year;
-       var start_date= year+"-"+month+"-"+day;
-
-      var h1= String( st.getHours());  
-      var m1= String( st.getMinutes());  
-      var s1= String( st.getSeconds()) ;
-      if(h1.length==1){
-          h1="0"+h1;
-      }
-      if(m1.length==1){
-          m1="0"+m1;
-      }
-      if(s1.length==1){
-          s1="0"+s1;
-      }
-      var stime=h1+":"+m1+":"+s1;
-      var date=start_date+" "+stime;
-
-                if(isConnected){
-                
-                    this.setState(
-                        {
-                            progress_visible:true
-                        }
-                    )
-                     
-               var  insertAPIURL="https://lit-citadel-01961.herokuapp.com/take_attendance";
-        
-               var header={
-                 'Content-Type':'application/json'
-               };
-               fetch(insertAPIURL,{
-                   method:'POST',
-                   headers:header,
-                   body:JSON.stringify({
-                    tag:tag,
-                    data:this.state.data,
-                    date:date
-                   })
-               } 
-               ).then((response)=>response.json())
-               .then((response)=>{
-                //   response.attendance_s tatus="";
-                this.setState(
-                    {
-                        progress_visible:false,
-                        
-                    }
-                )
-                //        
-                  if(response!=null||response.length!=0){
-                   if(response.mess=="s"){
-                       console.log("hii")
-                    this.back()
-
-                   }else{
-                    console.log("hii2")
-
-                    alert("no successfull")
-
-                   }
-                  }
-                   
-                 
-        
-               }).catch((error)=>{
-                   console.log("error from total survey:"+error);
-                   this.setState(
-                    {
-                        progress_visible:false
-                    }
-                )
-               })
-            }else{
-                ToastAndroid.show("internet is not Available ",ToastAndroid.SHORT);
-                this.setState(
-                    {
-                        progress_visible:false
-                    }
-                )
-            } 
-            }
-  set_status(value,index){
-        console.log("index"+index)
-    this.state.data[index].attendance_status=value;
-    this.setState({
-        data:this.state.data
-    },
-    ()=>{
-        console.log(this.state.data)
-    })
     
-
-  }
+ 
  async  get_data(){
     const isConnected=await NetworkUtils.isNetworkAvailable();
 
+    this.setState({
+        attendance_status:this.props.route.params.attendance_status
+    })
 //   console.log(  get_total_team_());
   var branch_id=this.props.route.params.branch_id;
   var sem_id=this.props.route.params.sem_id;
   var tag=this.props.route.params.tag;
-  console.log( branch_id );
-  console.log( sem_id );
-  console.log( tag );
+  var tag1=this.props.route.params.tag1;
+  var hod_id=this.props.route.params.faculty_id;
+  var attendance_status=this.props.route.params.attendance_status;
+  var st=new Date();
+            var day= String( st.getDate());  
+            var month=String( st.getMonth()+1 );  
+            var year= String(st.getFullYear()); 
+            if(month.length==1){
+                month="0"+month;
+            }
+            if(day.length==1){
+                day="0"+day;
+            }
+     
+        //  var start_date=day+"/"+month+"/"+year;
+         var start_date= year+"-"+month+"-"+day;
   this.setState({
       branch_id:branch_id,
       sem_id:sem_id
@@ -171,37 +71,39 @@ export class take_attendance extends Component {
                 }
             )
              
-       var  insertAPIURL="https://lit-citadel-01961.herokuapp.com/student_info";
-
-       var header={
-         'Content-Type':'application/json'
-       };
+            var     insertAPIURL="https://unimportuned-dozens.000webhostapp.com/faculty/show_attendance.php";
+    
+            var header={
+                'Accept':'application/json',
+                'Content-Type':'application/json'
+              };
        fetch(insertAPIURL,{
            method:'POST',
            headers:header,
            body:JSON.stringify({
             branch_id: branch_id,
             sem_id:sem_id,
-            tag:tag
+            from_where:tag,
+            tag1:tag1,
+            hod_id:hod_id,
+            date:start_date,
+            attendance_status:attendance_status,
+            type:"st2"
            })
        } 
        ).then((response)=>response.json())
        .then((response)=>{
-        //   response.attendance_s tatus="";
+        //   response.attendance_s ta tus="";
         console.log(response+"dv")
- 
+   
         //        
           if(response!=null||response.length!=0){
-            var result = response.map(function(el) {
-                var o = Object.assign({}, el);
-                o.attendance_status = 0;
-                return o;
-              })
-              console.log(result)
+ 
+            //   console.log(result)
                 //    response.attendance_status="";
             this.setState(
                 {
-                    data:result
+                    data:response
                 }
             )
             this.arrayholder = response;
@@ -232,7 +134,7 @@ export class take_attendance extends Component {
     } 
     }
     handleBackButtonClick=()=> {
-    this.props.navigation.replace("dashboard_fc");
+    this.props.navigation.replace("show_att");
      return true;
     }
 
@@ -345,11 +247,12 @@ return(
                  <RadioForm
                   
                   radio_props={this.radio_props}
-                  initial={item.attendance_status}
-                  onPress={(value) => {this.set_status(value,index)}}
+                  initial={this.state.attendance_status}
                   formHorizontal={true}
                   // labelColor="yellow"
                   // buttonColor="yellow"
+                  onPress={(value) => {}}
+
 
                   />
                  </View>
@@ -397,30 +300,7 @@ return(
 
                         />
 
-                        <View>
-                        <Button
-              mode="contained"
-              labelStyle={{
-                  color:'white'
-              }}
-              style={
-                 {
-                     width:90,
-                     alignSelf:'center',
-                     marginTop:14,
-                     borderRadius:12,
-                     backgroundColor:"#005a9e",
-                     height:40,
-                     bottom:10
-                 }
-             }
-             onPress={()=>{this.submit()}}
-             >
-                 Submit
-             </Button>
-            
-
-                        </View>
+                       
             
             
             </ImageBackground>
@@ -474,4 +354,4 @@ const style=StyleSheet.create(
 
     }
 )
-export default take_attendance
+export default show_attendance1

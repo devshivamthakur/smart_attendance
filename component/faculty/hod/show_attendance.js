@@ -13,14 +13,35 @@ export class show_attendance extends Component {
         visible:false,
         progress_visible:false,
          data:[],
+         branch_name:"",
+         tag:"",
+         tag1:"",
+         branch_id:""
+
 
     }
 
+    onPress_semester(faculty_id,sem_id,attendance_status,from_where){
+
+        console.log("faculty_id"+faculty_id)
+        if(from_where!='0'||from_where!=0){
+
+            this.props.navigation.navigate("show_att1",{faculty_id:faculty_id,tag:this.state.tag,tag1:this.state.tag1,branch_id:this.state.branch_id,sem_id:sem_id,attendance_status:attendance_status})
+
+        }
+
+
+    }
   
  async  get_data(){
 
 //   console.log(  get_total_team_());
         var branch_id=  await AsyncStorage.getItem("branch_id");
+        this.setState({
+            branch_name:await AsyncStorage.getItem("branch_name"),
+            branch_id:branch_id
+        })
+            
         var tag="";
         var tag1="";
 
@@ -32,6 +53,10 @@ export class show_attendance extends Component {
                 tag1="MITS_Student_attendance";
 
                 } 
+                this.setState({
+                    tag:tag,
+                    tag1:tag1,
+                })
         const isConnected=await NetworkUtils.isNetworkAvailable();
         if(isConnected){
             var st=new Date();
@@ -69,17 +94,18 @@ export class show_attendance extends Component {
             from_where:tag,
             date:start_date,
             branch_id:branch_id,
-            tag1:tag1
-           })
-       } 
+            tag1:tag1,
+            type:"st1"  
+           })   
+       }  
        ).then((response)=>response.json())
        .then((response)=>{
-          console.log(response)
+          console.log("sadf"+response)
           if(response!=null||response.length!=0){
-                  
+                   
             this.setState(
                 {
-                    data:response
+                    data:response 
                 }
             )
           }
@@ -109,7 +135,7 @@ export class show_attendance extends Component {
     } 
     }
     handleBackButtonClick=()=> {
-    // this.props.navigation.replace("hv");
+    this.props.navigation.replace("dashboard_fc");
      return true;
     }
   componentWillUnmount() {
@@ -186,7 +212,7 @@ return(
                      width:"33%"
                  }}
                  >
-                     <Text style={style.txt_1}>Branch</Text>
+                     <Text style={style.txt_1}>Semester</Text>
                      <Text style={style.txt_1}>First</Text>
                      <Text style={style.txt_1}>Second</Text>
                      <Text style={style.txt_1}>Third</Text>
@@ -204,14 +230,14 @@ return(
                  }}
                  >
                      <Text style={style.txt_1}>Present</Text>
-                     <Text style={style.txt_2}>{item.pfsem}</Text>
-                     <Text style={style.txt_2}>{item.pssem}</Text>
-                     <Text style={style.txt_2}>{item.ptsem}</Text>
-                     <Text style={style.txt_2}>{item.pfrsem}</Text>
-                     <Text style={style.txt_2}>{item.pfivesem}</Text>
-                     <Text style={style.txt_2}>{item.psixsem}</Text>
-                     <Text style={style.txt_2}>{item.psevensem}</Text>
-                     <Text style={style.txt_2}>{item.pesem}</Text>
+                     <Text style={style.txt_2} onPress={()=>{this.onPress_semester(item.id,1,1,item.pfsem)}} >{item.pfsem}</Text>
+                     <Text style={style.txt_2} onPress={()=>{this.onPress_semester(item.id,2,1,item.pssem)}}>{item.pssem}</Text>
+                     <Text style={style.txt_2} onPress={()=>{this.onPress_semester(item.id,3,1,item.ptsem)}}>{item.ptsem}</Text>
+                     <Text style={style.txt_2} onPress={()=>{this.onPress_semester(item.id,4,1,item.pfrsem)}}>{item.pfrsem}</Text>
+                     <Text style={style.txt_2} onPress={()=>{this.onPress_semester(item.id,5,1,item.pfivesem)}}>{item.pfivesem}</Text>
+                     <Text style={style.txt_2} onPress={()=>{this.onPress_semester(item.id,6,1,item.psixsem)}}>{item.psixsem}</Text>
+                     <Text style={style.txt_2} onPress={()=>{this.onPress_semester(item.id,7,1,item.psevensem)}}>{item.psevensem}</Text>
+                     <Text style={style.txt_2} onPress={()=>{this.onPress_semester(item.id,9,1,item.pesem)}}>{item.pesem}</Text>
                  
 
                  </View>
@@ -222,14 +248,14 @@ return(
                  }}
                  >
                      <Text style={style.txt_1}>Absent</Text>
-                     <Text style={style.txt_2}>{item.afsem}</Text>
-                     <Text style={style.txt_2}>{item.assem}</Text>
-                     <Text style={style.txt_2}>{item.atsem}</Text>
-                     <Text style={style.txt_2}>{item.afrsem}</Text>
-                     <Text style={style.txt_2}>{item.afivesem}</Text>
-                     <Text style={style.txt_2}>{item.asixsem}</Text>
-                     <Text style={style.txt_2}>{item.asevensem}</Text>
-                     <Text style={style.txt_2}>{item.aesem}</Text>
+                     <Text style={style.txt_2}  onPress={()=>{this.onPress_semester(item.id,1,0,item.afsem)}}>{item.afsem}</Text>
+                     <Text style={style.txt_2}  onPress={()=>{this.onPress_semester(item.id,2,0,item.assem)}}>{item.assem}</Text>
+                     <Text style={style.txt_2}  onPress={()=>{this.onPress_semester(item.id,3,0,item.atsem)}}>{item.atsem}</Text>
+                     <Text style={style.txt_2}  onPress={()=>{this.onPress_semester(item.id,4,0,item.afrsem)}}>{item.afrsem}</Text>
+                     <Text style={style.txt_2}  onPress={()=>{this.onPress_semester(item.id,5,0,item.afivesem)}}>{item.afivesem}</Text>
+                     <Text style={style.txt_2}  onPress={()=>{this.onPress_semester(item.id,6,0,item.asixsem)}}>{item.asixsem}</Text>
+                     <Text style={style.txt_2}  onPress={()=>{this.onPress_semester(item.id,7,0,item.asevensem)}}>{item.asevensem}</Text>
+                     <Text style={style.txt_2}  onPress={()=>{this.onPress_semester(item.id,8,0,item.aesem)}}>{item.aesem}</Text>
  
                  </View>
               
@@ -255,7 +281,22 @@ return(
                 source={require("../../../images/bg1.jpg")}
                 >
                 <ProgressDialog visible={this.state.progress_visible} />
-                 
+                <Surface
+         style={{
+             padding:4,
+             margin:5,
+             borderRadius:12,
+             flexDirection:"row",
+             justifyContent:"space-evenly",
+             backgroundColor:"#005a9e",
+         }}
+         >
+             <View>
+             <Text style={style.txt_h1}  >Branch : {this.state.branch_name}</Text>
+             </View>
+            
+         </Surface>
+               
                 <FlatList
                         data={this.state.data}            //set data on list
                         renderItem={this._renderItem}
@@ -341,6 +382,13 @@ const style=StyleSheet.create(
             width:"100%",
            //  alignItems:'center'
         },
+        txt_h1:{
+            fontSize:20,
+            textAlign:"center",
+            color:"white",
+            padding:5
+    
+        }
 
     }
 )

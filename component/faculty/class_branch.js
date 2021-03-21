@@ -114,7 +114,7 @@ componentWillUnmount() {
                 sem_id:this.state.sem_id,
                 date:start_date
                })
-           } 
+           }  
            ).then((response)=>response.json())
            .then((response)=>{
             //   response.attendance_s tatus="";

@@ -14,6 +14,7 @@ import dashboard_hod from "./component/faculty/hod/dashboard_hod";
 import class_branch from "./component/faculty/class_branch";
 import takeattendance from './component/faculty/takeattendance';
 import show_attendance from './component/faculty/hod/show_attendance';
+import show_attendance1 from './component/faculty/show_attendance1';
 
 // const drawer;
 const Stack=createStackNavigator();
@@ -209,7 +210,9 @@ componentWillUnmount(){
      }
   //logout 
   logout_fun(){
-   
+    AsyncStorage.setItem("sft","yes");  //set data
+    AsyncStorage.setItem("lt","Login");
+    AsyncStorage.removeItem("hod_id");
            this.props.navigation.replace("Login");
   }
 
@@ -256,7 +259,7 @@ componentWillUnmount(){
            independent={true}
            >
               <Stack.Navigator
-              initialRouteName="show_att"
+              initialRouteName="dashboard_fc"
               >
                    
                   <Stack.Screen
@@ -328,7 +331,22 @@ componentWillUnmount(){
                     },
                   }}
                    />
-
+                 <Stack.Screen
+                  name="show_att1"
+                  component={show_attendance1}
+                  options={{
+                    title:"show Attendance",
+                    headerStyle:{
+                      backgroundColor:'#bc5100'
+                    },
+                    headerTitleStyle:{
+                      fontWeight:'bold',
+                      color:"white",
+                      // width:100,
+                      fontSize:16
+                    },
+                  }}
+                   />
               </Stack.Navigator>
              
            </NavigationContainer>
