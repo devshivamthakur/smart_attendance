@@ -6,6 +6,8 @@ import NetworkUtils from './../../NetworkUtils';
 import ProgressDialog from 'react-native-progress-dialog';
 import RadioForm from 'react-native-simple-radio-button';
 import { Button} from 'react-native-paper';
+import AsyncStorage  from "@react-native-community/async-storage";  
+
 export class takeattendance extends Component {
     constructor(args){
         super(args)
@@ -59,23 +61,24 @@ export class takeattendance extends Component {
                     }
                 )
                  
-           var  insertAPIURL="https://lit-citadel-01961.herokuapp.com/student_info";
+                var     insertAPIURL="https://unimportuned-dozens.000webhostapp.com/faculty/show_student.php";
     
-           var header={
-             'Content-Type':'application/json'
-           };
+                var header={
+                    'Accept':'application/json',
+                    'Content-Type':'application/json'
+                  };
            fetch(insertAPIURL,{
                method:'POST',
                headers:header,
                body:JSON.stringify({
                 branch_id: branch_id,
                 sem_id:sem_id,
-                tag:tag
+                from_where:tag
                })
            } 
            ).then((response)=>response.json())
            .then((response)=>{
-            //   response.attendance_s tatus="";
+            //   response.attendan ce_s tatus="";
             console.log(response+"dv")
      
             //        
@@ -151,7 +154,8 @@ export class takeattendance extends Component {
          
     
            const isConnected=await NetworkUtils.isNetworkAvailable();
-    
+        var hod_id=   await  AsyncStorage.getItem("hod_id");
+
               var tag=this.props.route.params.tag;
                     if(tag=="MIT_Student_info"){
                         tag="MIT_Student_attendance";
@@ -198,23 +202,26 @@ export class takeattendance extends Component {
                             }
                         )
                          
-                   var  insertAPIURL="https://lit-citadel-01961.herokuapp.com/take_attendance";
-            
-                   var header={
-                     'Content-Type':'application/json'
-                   };
+                        var     insertAPIURL="https://unimportuned-dozens.000webhostapp.com/faculty/take_attendance.php";
+    
+                        var header={
+                            'Accept':'application/json',
+                            'Content-Type':'application/json'
+                          };
                    fetch(insertAPIURL,{
                        method:'POST',
                        headers:header,
                        body:JSON.stringify({
-                        tag:tag,
+                        from_where:tag,
                         data:this.state.data,
-                        date:date
+                        date:date,
+                        hod_id:hod_id
                        })
                    } 
                    ).then((response)=>response.json())
                    .then((response)=>{
                     //   response.attendance_s tatus="";
+                    console.log(response)
                     this.setState(
                         {
                             progress_visible:false,
@@ -223,8 +230,10 @@ export class takeattendance extends Component {
                     )
                     //        
                       if(response!=null||response.length!=0){
-                       if(response.mess=="s"){
+                       if(response[0].mess=="s"){
                            console.log("hii")
+                           alert("successfull")
+
                         this.back()
     
                        }else{
@@ -238,7 +247,7 @@ export class takeattendance extends Component {
                      
             
                    }).catch((error)=>{
-                    this.back()
+                    // this.back()
 
                        console.log("error from total survey:"+error);
                        this.setState(

@@ -13,6 +13,7 @@ import ProgressDialog from 'react-native-progress-dialog';
 import dashboard_hod from "./component/faculty/hod/dashboard_hod";
 import class_branch from "./component/faculty/class_branch";
 import takeattendance from './component/faculty/takeattendance';
+import show_attendance from './component/faculty/hod/show_attendance';
 
 // const drawer;
 const Stack=createStackNavigator();
@@ -158,33 +159,36 @@ componentWillUnmount(){
   if(isConnected){
       var hod_id=await AsyncStorage.getItem("hod_id");
 
-       var  insertAPIURL="https://lit-citadel-01961.herokuapp.com/hod_info";
+    var  insertAPIURL="https://unimportuned-dozens.000webhostapp.com/faculty/user_registration.php";
 
-      var header={
+       var header={
+        'Accept':'application/json',
         'Content-Type':'application/json'
       };
-      
-      fetch(insertAPIURL,{
+       
+      fetch(insertAPIURL,{ 
           method:'POST',
           headers:header,
           body:JSON.stringify({
 
             hod_id: Number(hod_id),
-          })
-      }
+            selected_login_type:"info"
+          })  
+      } 
       ).then((response)=>response.json())
       .then((response)=>{
             console.log(response)
             this.setState({
               progress_visible:false
             })
-             console.log("SDF "+response.value[0].name)
             if(response.length!=0){
 
+              AsyncStorage.setItem("branch_name",response.branch);
+              AsyncStorage.setItem("branch_id",String(response.branch_id));
               this.setState(
                 {
-                  name:response.value[0].name,
-                  branch:response.value[0].branch
+                  name:response.name,
+                  branch:response.branch
                 }
               )
          
@@ -252,7 +256,7 @@ componentWillUnmount(){
            independent={true}
            >
               <Stack.Navigator
-              initialRouteName="dashboard_fc"
+              initialRouteName="show_att"
               >
                    
                   <Stack.Screen
@@ -295,8 +299,35 @@ componentWillUnmount(){
                   <Stack.Screen
                   name="take_at"
                   component={takeattendance}
+                  options={{
+                    title:"Take Attendance",
+                    headerStyle:{
+                      backgroundColor:'#bc5100'
+                    },
+                    headerTitleStyle:{
+                      fontWeight:'bold',
+                      color:"white",
+                      // width:100,
+                      fontSize:16
+                    },
+                  }}
                    />
-
+                  <Stack.Screen
+                  name="show_att"
+                  component={show_attendance}
+                  options={{
+                    title:"show Attendance",
+                    headerStyle:{
+                      backgroundColor:'#bc5100'
+                    },
+                    headerTitleStyle:{
+                      fontWeight:'bold',
+                      color:"white",
+                      // width:100,
+                      fontSize:16
+                    },
+                  }}
+                   />
 
               </Stack.Navigator>
              

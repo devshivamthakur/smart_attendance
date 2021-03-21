@@ -58,12 +58,13 @@ class login extends React.Component{
     })
 
     var  insertAPIURL;
-   insertAPIURL="https://lit-citadel-01961.herokuapp.com/"+this.state.selected_login_type;
+   insertAPIURL="https://unimportuned-dozens.000webhostapp.com/faculty/user_registration.php";
 
    console.log(insertAPIURL);
-    var header={
-      'Content-Type':'application/json'
-    };
+   var header={
+    'Accept':'application/json',
+    'Content-Type':'application/json'
+  };
     
     fetch(insertAPIURL,{
       method:'POST',
@@ -71,6 +72,7 @@ class login extends React.Component{
       body:JSON.stringify({
         uname:this.state.get_user_name,
         password:this.state.get_user_pass,
+        selected_login_type:this.state.selected_login_type
       })
     }
     ).then((response)=>response.json())
@@ -82,8 +84,8 @@ class login extends React.Component{
     })
     if(response!=null){
     
-     console.log(response)
-     if(response.mess=="matched"){
+     console.log(response[0].hod_id)
+     if(response[0].mess=="matched"){
         //  console.log("servey_id"+response[0].servey_id);
          
       if(this.state.selected_login_type=="teach"){
@@ -93,12 +95,12 @@ class login extends React.Component{
         
            AsyncStorage.setItem("sft","no");  //set data
          AsyncStorage.setItem("lt","hod");
-         AsyncStorage.setItem("hod_id",String(response.hod_id));
+         AsyncStorage.setItem("hod_id",String(response[0].hod_id));
         this.props.navigation.replace("fc");
         }
     //  Alert.alert("Success full")
    
-     }else if(response.mess=="notmatched"){
+     }else if(response[0].mess=="notmatched"){
        ToastAndroid.show("Username and Password doesn't match",ToastAndroid.LONG);
      }
     }

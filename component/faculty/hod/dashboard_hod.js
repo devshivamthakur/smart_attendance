@@ -49,7 +49,7 @@ export default class dashboard_hod extends Component {
                                flex:1
                            }}      
                        onPress={()=>{
-                           this.props.navigation.replace("class_branch");
+                           this.props.navigation.navigate("class_branch");
                        }}
                        >
                          <Card   // attendance View

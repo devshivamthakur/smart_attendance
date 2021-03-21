@@ -5,6 +5,7 @@ import { Card } from 'react-native-shadow-cards';
 import { Button,Surface} from 'react-native-paper';
 import { BackHandler } from 'react-native';
 import ProgressDialog from 'react-native-progress-dialog';
+import AsyncStorage  from "@react-native-community/async-storage";  
 
 import NetworkUtils from '../../NetworkUtils';
 
@@ -20,8 +21,8 @@ export class class_branch extends Component {
       branch_id:"",
       sem_id:"",
       sem_view_visble:"none",
-      progress_visible:false
-        
+      progress_visible:false,
+      branch_name:"", 
     }
     handleBackButtonClick= async ()=> {
     //   console.log("type"+this.state.type)
@@ -30,8 +31,16 @@ export class class_branch extends Component {
         return true;
       }
     
-    
+async    get_data(){
+    this.setState({
+        branch_id: await AsyncStorage.getItem("branch_id"),
+        branch_name:  await AsyncStorage.getItem("branch_name")
+        
+    })
+  
+    }
 componentDidMount(){
+    this.get_data()
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
 
 }
@@ -91,11 +100,12 @@ componentWillUnmount() {
            var start_date= year+"-"+month+"-"+day;
     
                 // alert(this.state.sem_id+" "+this.state.branch_id)
-                var  insertAPIURL="https://lit-citadel-01961.herokuapp.com/attendance_data";
+                var     insertAPIURL="https://unimportuned-dozens.000webhostapp.com/faculty/attendance_data.php";
     
-           var header={
-             'Content-Type':'application/json'
-           };
+                var header={
+                    'Accept':'application/json',
+                    'Content-Type':'application/json'
+                  };
            fetch(insertAPIURL,{
                method:'POST',
                headers:header,
@@ -112,22 +122,23 @@ componentWillUnmount() {
      
             //        
               if(response!=null||response.length!=0){
-                  if(response.mess=="present"){
+                  if(response[0].mess=="present"){
 
                     alert("this branch and semester attendance has already taken")
 
-                  }else if(response.mess=="s"){
+                  }else if(response[0].mess=="s"){
                     var tag="";
+
                     if(this.state.branch_id=='1'||this.state.branch_id=='2'){
                             tag="MIT_Student_info";
                     }else{
                         tag="MITS_Student_info";
                     }
-                    this.props.navigation.replace("take_at",{branch_id:this.state.branch_id,sem_id:this.state.sem_id,tag:tag})
+                    this.props.navigation.navigate("take_at",{branch_id:this.state.branch_id,sem_id:this.state.sem_id,tag:tag})
                 
                   }else{
 
-                ToastAndroid.show("serve problem",ToastAndroid.LONG);
+                     ToastAndroid.show("serve problem",ToastAndroid.LONG);
 
                   }
                
@@ -185,19 +196,13 @@ componentWillUnmount() {
                     onValueChange={(itemVale)=>{this.branch_picker(itemVale)}}
                   >
 
-                  <Picker.Item label="Select Branch " value=""  color="white"/>
-                  <Picker.Item label="Civil Engeneering" value="1"  color="green"/>
-                  <Picker.Item label="Mechanical Engeneering" color="green" value="2" />
-                  <Picker.Item label="Electronic Engeneering" color="green" value="3" />
-                  <Picker.Item label="Electical and  Electronic Engeneering" color="green" value="4" />
-                  <Picker.Item label="Computer science Engeneering" color="green" value="5" />
+                  <Picker.Item label={this.state.branch_name} value={this.state.branch_name}  color="green"/>
+              
                          
                     </Picker>
                     </View>
                     <View
-                    style={{
-                        display:this.state.sem_view_visble
-                    }}
+                   
                     >
                     <Text
                  style={styles.indicate}
