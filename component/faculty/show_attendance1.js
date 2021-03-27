@@ -5,7 +5,6 @@ import { BackHandler } from 'react-native';
 import NetworkUtils from './../../NetworkUtils';
 import ProgressDialog from 'react-native-progress-dialog';
 import RadioForm from 'react-native-simple-radio-button';
-import { Button} from 'react-native-paper';
 
 export class show_attendance1 extends Component {
 

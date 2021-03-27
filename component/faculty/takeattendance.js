@@ -215,7 +215,8 @@ export class takeattendance extends Component {
                         from_where:tag,
                         data:this.state.data,
                         date:date,
-                        hod_id:hod_id
+                        hod_id:hod_id,
+                        type:1
                        })
                    } 
                    ).then((response)=>response.json())

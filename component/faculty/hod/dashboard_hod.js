@@ -104,9 +104,9 @@ export default class dashboard_hod extends Component {
                                marginLeft:10,
                                flex:1
                            }}      
-                    //    onPress={()=>{
-                    //        this.props.navigation.replace("addnh");
-                    //    }}
+                       onPress={()=>{
+                           this.props.navigation.replace("add_student");
+                       }}
                        >
                          <Card   // attendance View
                     style={styles.card_defi1}
@@ -117,7 +117,7 @@ export default class dashboard_hod extends Component {
                     />
                     <Text
                     style={styles.txt}
-                    >Take attendance</Text> 
+                    >Add new Student</Text> 
                     </Card>                  
                  </Pressable> 
                    <Pressable    // today attendance view
@@ -126,9 +126,9 @@ export default class dashboard_hod extends Component {
                                marginLeft:10,
                                flex:1
                            }}      
-                    //    onPress={()=>{
-                    //        this.props.navigation.replace("addnh");
-                    //    }}
+                       onPress={()=>{
+                           this.props.navigation.replace("search_student");
+                       }}
                        >
                          <Card   // today attendance View
                     style={styles.card_defi1}

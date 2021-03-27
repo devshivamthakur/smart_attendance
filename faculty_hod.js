@@ -15,6 +15,8 @@ import class_branch from "./component/faculty/class_branch";
 import takeattendance from './component/faculty/takeattendance';
 import show_attendance from './component/faculty/hod/show_attendance';
 import show_attendance1 from './component/faculty/show_attendance1';
+import search_student from './component/faculty/search_student';
+import add_student from './component/faculty/hod/add_student';
 
 // const drawer;
 const Stack=createStackNavigator();
@@ -259,7 +261,7 @@ componentWillUnmount(){
            independent={true}
            >
               <Stack.Navigator
-              initialRouteName="dashboard_fc"
+              initialRouteName="add_student"
               >
                    
                   <Stack.Screen
@@ -336,6 +338,38 @@ componentWillUnmount(){
                   component={show_attendance1}
                   options={{
                     title:"show Attendance",
+                    headerStyle:{
+                      backgroundColor:'#bc5100'
+                    },
+                    headerTitleStyle:{
+                      fontWeight:'bold',
+                      color:"white",
+                      // width:100,
+                      fontSize:16
+                    },
+                  }}
+                   />
+                    <Stack.Screen
+                  name="search_student"
+                  component={search_student}
+                  options={{
+                    title:"Search Student",
+                    headerStyle:{
+                      backgroundColor:'#bc5100'
+                    },
+                    headerTitleStyle:{
+                      fontWeight:'bold',
+                      color:"white",
+                      // width:100,
+                      fontSize:16
+                    },
+                  }}
+                   />
+                   <Stack.Screen
+                  name="add_student"
+                  component={add_student}
+                  options={{
+                    title:"Add New Student",
                     headerStyle:{
                       backgroundColor:'#bc5100'
                     },
