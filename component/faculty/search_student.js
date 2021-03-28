@@ -1,17 +1,16 @@
-import React, { Component } from 'react'
+import React, { Component,useState } from 'react'
 import { Text, View ,StyleSheet,ImageBackground} from 'react-native'
 import {Surface,Searchbar} from 'react-native-paper';
 import ProgressDialog from 'react-native-progress-dialog';
-import RadioForm from 'react-native-simple-radio-button';
 import NetworkUtils from './../../NetworkUtils';
 import AsyncStorage  from "@react-native-community/async-storage";  
 import { BackHandler } from 'react-native';
 import { Button} from 'react-native-paper';
+import { Picker } from '@react-native-picker/picker';
 
 export class search_student extends Component {
     state={
         search_student_txt:"",
-        attendance_status:0,
         progress_visible:false,
         name:"",
         father_name:"",
@@ -20,12 +19,11 @@ export class search_student extends Component {
         data_visible:"none",
         branch_id:"",
         branch_name:"",
-        student_id:""
+        student_id:"",
+        btn_visible:"none",
+        attendance_status:1
     }
-    radio_props = [
-        {label: 'Absent ', value: 0 },
-        {label: 'Present', value: 1 }
-      ];
+
 
       async onPress_continue(search_student_text){
           console.log(this.state.branch_id)
@@ -100,11 +98,12 @@ export class search_student extends Component {
                           attendance_status:Number( response[0].attendance_status),
                           father_name:response[0].father_name,
                           enrollment_no:response[0].enrollment_no,
-                          data_visible:"flex",
                           student_id:response[0].student_id,
                           data:response[0]
 
-                      })
+                      },
+                      ()=>{this.setState({ data_visible:"flex",})})
+                      this.set_status( 1)
                       console.log( typeof( this.state.attendance_status))
                     
                       }else{
@@ -155,11 +154,18 @@ export class search_student extends Component {
         branch_id: await AsyncStorage.getItem("branch_id"),
         branch_name:  await AsyncStorage.getItem("branch_name")
         
-    })
+    });
+    var type=this.props.route.params.type;
+    if(type=="1"){
+          this.setState({
+              btn_visible:"flex"
+          });
+    }
   }
   componentDidMount(){
    
-    this.get()
+    this.get();
+    
       if(this.state.data.length!=0){
         this.setState({
             data_visible:"flex"
@@ -312,6 +318,9 @@ var date=start_date+" "+stime;
       }
      }
 
+     onPress_update(){
+         this.props.navigation.replace("update_student",{student_id:this.state.student_id,data:this.state.data})
+     }
     render() {
         return (
             <ImageBackground
@@ -327,7 +336,9 @@ var date=start_date+" "+stime;
                     blurOnSubmit={true}
                     autoCorrect={false}    
                     style={style.search}
-      />
+           />
+           
+            
       <Surface
     style={{
         backgroundColor:"#005a9e",
@@ -379,7 +390,9 @@ var date=start_date+" "+stime;
                  >
                      <Text style={style.txt_1}>Father Name       :</Text>
                      <Text style={style.txt_1}>Enrollment           :      No </Text>
-
+                     <Text
+                   style={style.txt_1}
+                    >Attendance Status</Text>
                  </View> 
                  <View 
                  style={{
@@ -390,27 +403,34 @@ var date=start_date+" "+stime;
                      <Text style={style.txt_2}>{this.state.father_name}</Text>
                      <Text style={style.txt_2}>{this.state.enrollment_no}</Text>
                      
-                  
+                     <View
+                    style={style.picker_view}
+                    >
+                    <Picker
+                    selectedValue={this.state.attendance_status}
+                    style={style.state_picker} 
+                    itemStyle={style.it}
+                    onValueChange={(itemVale)=>{this.setState({attendance_status:itemVale})}}
+                
+                  >
+
+                  <Picker.Item label="Present" value={"1"}  color="black"/>
+                  <Picker.Item label="Absent" value={"0"}  color="black"/>
+              
+                         
+                    </Picker>
+                    </View>
+                   
                  </View>
               
                  </View>
+                
                  <View
                  style={{
-                     alignItems:"center"
+                     flexDirection:"row",
+                     justifyContent:"space-evenly"
                  }}
                  >
-                 <RadioForm
-                  
-                  radio_props={this.radio_props}
-                  initial={this.state.attendance_status}
-                  formHorizontal={true}
-                  // labelColor="yellow"
-                  // buttonColor="yellow"
-                  onPress={(value) => {this.set_status(value)}}
-
-
-                  />
-                 </View>
                  <Button
               mode="contained"
               labelStyle={{
@@ -431,8 +451,30 @@ var date=start_date+" "+stime;
              >
                  Submit
              </Button>
-            
-
+             <Button
+              mode="contained"
+              labelStyle={{
+                  color:'white'
+              }}
+              style={
+                 {
+                     width:90,
+                     alignSelf:'center',
+                     marginTop:18,
+                     borderRadius:12,
+                     backgroundColor:"#005a9e",
+                     height:40,
+                     bottom:10,
+                     display:this.state.btn_visible
+                 }
+             }
+             onPress={()=>{this.onPress_update()}}
+             >
+                 Update
+             </Button>
+         
+                 </View>
+                
                  </Surface>
 
     </Surface>
@@ -489,7 +531,32 @@ const style=StyleSheet.create(
             margin:15,
             padding:5,
             borderRadius:14
-        }
+        },indicate:{
+            fontSize:18,
+            fontWeight:'bold',
+           color:'blue',
+        marginTop:10,
+       
+    }, state_picker:{
+        //  width:100,
+       
+        height:50,
+        borderWidth:5,
+        borderColor:'#0adeef',
+        // color:'white'
+    }, picker_view:{
+        borderColor:"#136a8a",
+        borderWidth:2,
+        borderRadius:10,
+          backgroundColor:"white",
+          marginTop:15,
+          width:150
+     },
+     it:{
+         paddingLeft:40,
+           fontSize:16,
+           fontWeight:'bold',
+     }
 
     }
 )

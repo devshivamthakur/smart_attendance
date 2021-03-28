@@ -8,7 +8,7 @@ import ProgressDialog from 'react-native-progress-dialog';
 import AsyncStorage  from "@react-native-community/async-storage";  
 import NetworkUtils from '../../../NetworkUtils';
 
-export class add_student extends Component {
+export class update_student extends Component {
     state={
         branch_id:"",
         sem_id:"",
@@ -19,7 +19,10 @@ export class add_student extends Component {
         student_age:"",
         progress_visible:false,
         mobile:"",
-        gender:""
+        gender:"",
+        bg:"rgba(52, 52, 52, 0.8)",
+        data:[],
+        edit:false
 
     }
    
@@ -35,6 +38,7 @@ export class add_student extends Component {
             return true;
           }
   async onPress_continue(){
+      var student_id=this.props.route.params.student_id
             var hod_id=  await  AsyncStorage.getItem("hod_id");
             var tag=Number( this.state.branch_id);
                 console.log(tag)
@@ -96,8 +100,9 @@ export class add_student extends Component {
                           gender:this.state.gender,
                           enrollment_no:this.state.enrollment_no,
                           mobile:this.state.mobile,
-                          type:"1",
-                          from_where:tag
+                          type:"2",
+                          from_where:tag,
+                          student_id:student_id
                          })
                      }  
                      ).then((response)=>response.json())
@@ -156,12 +161,34 @@ export class add_student extends Component {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
     }
     async    get_data(){
+
+        console.log(this.props.route.params.data)
         this.setState({
             branch_id: await AsyncStorage.getItem("branch_id"),
-            branch_name:  await AsyncStorage.getItem("branch_name")
-            
-        })
+            branch_name:  await AsyncStorage.getItem("branch_name"),
+            data:this.props.route.params.data
+        },
+        ()=>{
+            this.setState({
+             
+                name:this.state.data.name,
+                enrollment_no:this.state.data.enrollment_no,
+                father_name:this.state.data.father_name,
+                student_age:this.state.data.student_age,
+                mobile:this.state.data.student_mobile_no,
+                gender:this.state.data.gender,
+                sem_id:this.state.data.sem_id,
+                student_age:this.state.data.student_age
+            })
+        }
+        );
       
+        }
+        onPress_edit(){
+            this.setState({
+                bg:"#5ddef4",
+                edit:true
+            })
         }
     render() {
         return (
@@ -172,7 +199,7 @@ export class add_student extends Component {
                 <ProgressDialog visible={this.state.progress_visible} />
                 <ScrollView>
                 <Card
-                style={styles.all_picker}
+                style={[styles.all_picker,{backgroundColor:this.state.bg}]}
                 >
                     
                     <Text
@@ -186,6 +213,7 @@ export class add_student extends Component {
                     style={styles.state_picker} 
                     itemStyle={styles.it}
                     onValueChange={(itemVale)=>{this.setState({branch_id:itemVale})}}
+                     enabled={this.state.edit}
                   >
 
                   <Picker.Item label={this.state.branch_name} value={this.state.branch_name}  color="green"/>
@@ -207,6 +235,7 @@ export class add_student extends Component {
                     style={styles.state_picker}
                     itemStyle={styles.it}
                     onValueChange={(itemVale)=>{this.setState({sem_id:itemVale})}}
+                    enabled={this.state.edit}
 
                     >
                        <Picker.Item label="Select Semester" value=""  color="white"/>
@@ -229,7 +258,7 @@ export class add_student extends Component {
                      theme={{roundness: 10,colors: { primary: 'white',underlineColor:'#136a8a',text:"green"}}}
                      style={styles.TextInput}   
                     value={this.state.name}
-                
+                editable={this.state.edit}
                      onChangeText={text => this.setState({name:text})}
                      />
                     <TextInput
@@ -241,12 +270,16 @@ export class add_student extends Component {
                      style={styles.TextInput}   
                     value={this.state.student_age}
                      keyboardType="phone-pad"
+                     editable={this.state.edit}
+
                      onChangeText={text => this.setState({student_age:text})}
                      />
                        <TextInput
                      label="Enter Student's Father Name"
                      mode="flat"
                      underlineColor="transparent" 
+                     editable={this.state.edit}
+
                      theme={{roundness: 10,colors: { primary: 'white',underlineColor:'#136a8a',text:"green"}}}
                      style={styles.TextInput}   
                     value={this.state.father_name}
@@ -263,6 +296,8 @@ export class add_student extends Component {
                     style={styles.state_picker} 
                     itemStyle={styles.it}
                     onValueChange={(itemVale)=>{this.setState({gender:itemVale})}}
+                    enabled={this.state.edit}
+
                   >
 
                   <Picker.Item label="Select Gender" value=""  color="black"/>
@@ -281,6 +316,8 @@ export class add_student extends Component {
                      style={styles.TextInput}   
                     value={this.state.enrollment_no}
                      onChangeText={text => this.setState({enrollment_no:text})}
+                     editable={this.state.edit}
+
                      />
                        <TextInput
                      label="Enter Student Mobile Number"
@@ -292,11 +329,39 @@ export class add_student extends Component {
                     value={this.state.mobile}
                      keyboardType="phone-pad"
                      onChangeText={text => this.setState({mobile:text})}
+                     editable={this.state.edit}
+
                      />
                     </View>
                 
-                  
-                
+                <View
+                style={{
+                    flexDirection:"row",
+                    justifyContent:"space-between"
+                }}
+                >
+                <Button 
+                    onPress={()=>{
+                        this.onPress_edit();
+                    }}
+                    mode="contained"
+                    labelStyle={{
+                        color:'white',
+                        fontSize:16
+                    }}
+                    style={
+                        {
+                            width:100,
+                            alignSelf:'center',
+                            marginTop:"10%",
+                            borderRadius:15,
+                            backgroundColor:"#bc5100",
+                            height:40
+                        }
+                    }
+                    >
+                     Edit
+                    </Button>
                     <Button 
                     onPress={()=>{
                         this.onPress_continue();
@@ -308,7 +373,7 @@ export class add_student extends Component {
                     }}
                     style={
                         {
-                            width:150,
+                            width:100,
                             alignSelf:'center',
                             marginTop:"10%",
                             borderRadius:15,
@@ -317,8 +382,13 @@ export class add_student extends Component {
                         }
                     }
                     >
-                     Continue
+                     Update
                     </Button>
+              
+                </View>
+                  
+                
+                   
                 </Card>
                 </ScrollView>
 
@@ -353,7 +423,7 @@ const styles=StyleSheet.create(
              padding:30,
              marginTop:"5%",
              alignSelf:'center',
-             backgroundColor:'rgba(52, 52, 52, 0.8)',
+            //  backgroundColor:'rgba(52, 52, 52, 0.8)',
              borderRadius:30,
              width:"95%",
              margin:15,
@@ -396,4 +466,4 @@ const styles=StyleSheet.create(
 
     }
 )
-export default add_student
+export default update_student

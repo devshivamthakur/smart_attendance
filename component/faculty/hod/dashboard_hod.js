@@ -1,6 +1,7 @@
 import React, { Component,useRef } from 'react'
 import { SafeAreaView, StyleSheet, Text, View,Image, ImageBackground,Pressable } from 'react-native'
 import { Card } from 'react-native-shadow-cards';
+import LottieView from 'lottie-react-native';
 
 
 export default class dashboard_hod extends Component {
@@ -79,7 +80,7 @@ export default class dashboard_hod extends Component {
                     >
                          <Image
                     style={styles.img_add_home}
-                    source={require("../../../images/add_home.png")}
+                    source={require("../../../images/show_at.png")}
                     />
                     <Text
                     style={styles.txt}
@@ -113,7 +114,7 @@ export default class dashboard_hod extends Component {
                     >
                          <Image
                     style={styles.img_add_home}
-                    source={require("../../../images/add_home.png")}
+                    source={require("../../../images/add_st.png")}
                     />
                     <Text
                     style={styles.txt}
@@ -127,19 +128,16 @@ export default class dashboard_hod extends Component {
                                flex:1
                            }}      
                        onPress={()=>{
-                           this.props.navigation.replace("search_student");
+                           this.props.navigation.replace("search_student",{type:"1"});
                        }}
                        >
                          <Card   // today attendance View
                     style={styles.card_defi1}
                     >
-                         <Image
-                    style={styles.img_add_home}
-                    source={require("../../../images/add_home.png")}
-                    />
-                    <Text
-                    style={styles.txt}
-                    >Search Student</Text> 
+                        <LottieView source={require('../../../images/search.json')} autoPlay loop style={styles.img_add_home1}/>
+                        <Text
+                    style={[styles.txt,{bottom:5}]}
+                    >Search Student</Text>
                     </Card>                  
                  </Pressable> 
                   
@@ -167,12 +165,13 @@ const styles=StyleSheet.create(
        },
    
        txt:{
-          margin:7,
-           fontSize:19,
+        //   margin:7,
+           fontSize:17,
            fontWeight:'bold',
            color:'white',
           textAlign:'center',
-          alignSelf:'center'
+          alignSelf:'center',
+          marginBottom:35
        },
        main_container:{
         flex: 1,
@@ -187,7 +186,7 @@ const styles=StyleSheet.create(
    },
 
   img_add_home:{
-      marginTop:13
+      marginTop:7
   },
   card_defi1:{
     alignItems:'center',
@@ -199,6 +198,10 @@ const styles=StyleSheet.create(
  backgroundColor:'#005a9e',
  borderRadius:18,
   },
+  img_add_home1:{
+      height:90,
+    //   top:-5
+  }
 
 
  

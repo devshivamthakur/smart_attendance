@@ -10,6 +10,8 @@ target 'smartattendance' do
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+  pod 'lottie-react-native', :path => '../node_modules/lottie-react-native'
+
   target 'smartattendanceTests' do
     inherit! :complete
     # Pods for testing

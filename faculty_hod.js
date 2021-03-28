@@ -17,6 +17,7 @@ import show_attendance from './component/faculty/hod/show_attendance';
 import show_attendance1 from './component/faculty/show_attendance1';
 import search_student from './component/faculty/search_student';
 import add_student from './component/faculty/hod/add_student';
+import update_student from './component/faculty/hod/update_student';
 
 // const drawer;
 const Stack=createStackNavigator();
@@ -261,7 +262,7 @@ componentWillUnmount(){
            independent={true}
            >
               <Stack.Navigator
-              initialRouteName="add_student"
+              initialRouteName="dashboard_fc"
               >
                    
                   <Stack.Screen
@@ -370,6 +371,22 @@ componentWillUnmount(){
                   component={add_student}
                   options={{
                     title:"Add New Student",
+                    headerStyle:{
+                      backgroundColor:'#bc5100'
+                    },
+                    headerTitleStyle:{
+                      fontWeight:'bold',
+                      color:"white",
+                      // width:100,
+                      fontSize:16
+                    },
+                  }}
+                   />
+                   <Stack.Screen
+                  name="update_student"
+                  component={update_student}
+                  options={{
+                    title:"Update Student",
                     headerStyle:{
                       backgroundColor:'#bc5100'
                     },
