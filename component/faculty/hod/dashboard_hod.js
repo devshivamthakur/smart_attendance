@@ -136,8 +136,8 @@ export default class dashboard_hod extends Component {
                     >
                         <LottieView source={require('../../../images/search.json')} autoPlay loop style={styles.img_add_home1}/>
                         <Text
-                    style={[styles.txt,{bottom:5}]}
-                    >Search Student</Text>
+                    style={[styles.txt,{bottom:-8}]}
+                    >Search    Student</Text>
                     </Card>                  
                  </Pressable> 
                   

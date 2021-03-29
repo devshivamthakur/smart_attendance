@@ -77,7 +77,7 @@ class login extends React.Component{
     }
     ).then((response)=>response.json())
     .then((response)=>{
-    //  console.log(response.mess)
+     console.log(response)
     //  var res=response[0];\
     this.setState({
       progress_visible:false
@@ -89,7 +89,10 @@ class login extends React.Component{
         //  console.log("servey_id"+response[0].servey_id);
          
       if(this.state.selected_login_type=="teach"){
-       
+        AsyncStorage.setItem("sft","no");  //set data
+        AsyncStorage.setItem("lt","teach");
+        AsyncStorage.setItem("hod_id",String(response[0].hod_id));
+       this.props.navigation.replace("fc_t");
          }
          else if(this.state.selected_login_type=="hod"){
         

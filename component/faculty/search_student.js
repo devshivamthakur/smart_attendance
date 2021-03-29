@@ -95,7 +95,7 @@ export class search_student extends Component {
                   if(response!=null||response.length!=0){
                       this.setState({
                           name:response[0].name,
-                          attendance_status:Number( response[0].attendance_status),
+                          attendance_status:Number( response[0].attendance_status)==null?"-1":response[0].attendance_status,
                           father_name:response[0].father_name,
                           enrollment_no:response[0].enrollment_no,
                           student_id:response[0].student_id,
@@ -103,7 +103,6 @@ export class search_student extends Component {
 
                       },
                       ()=>{this.setState({ data_visible:"flex",})})
-                      this.set_status( 1)
                       console.log( typeof( this.state.attendance_status))
                     
                       }else{
@@ -214,20 +213,7 @@ export class search_student extends Component {
 //   //  var start_date=day+"/"+month+"/"+year;
  var start_date= year+"-"+month+"-"+day;
 
-var h1= String( st.getHours());  
-var m1= String( st.getMinutes());  
-var s1= String( st.getSeconds()) ;
-if(h1.length==1){
-    h1="0"+h1;
-}
-if(m1.length==1){
-    m1="0"+m1;
-}
-if(s1.length==1){
-    s1="0"+s1;
-}
-var stime=h1+":"+m1+":"+s1;
-var date=start_date+" "+stime;
+
         console.log(this.state.branch_id)
         console.log(this.state.branch_name)
         var tag=Number( this.state.branch_id);
@@ -268,7 +254,7 @@ var date=start_date+" "+stime;
                   student_id:this.state.student_id,
                   attendance_status:this.state.attendance_status,
                   from_where:tag1,
-                  date:date,
+                  date:start_date,
                   type:2,
                   hod_id:hod_id
                  })
@@ -276,7 +262,7 @@ var date=start_date+" "+stime;
              ).then((response)=>response.json())
              .then((response)=>{
               //   response.attendance_s tatus="";
-              console.log(response)
+              console.log(JSON.stringify(response))
        
                      
               if(response!=null||response.length!=0){
@@ -414,8 +400,9 @@ var date=start_date+" "+stime;
                 
                   >
 
-                  <Picker.Item label="Present" value={"1"}  color="black"/>
-                  <Picker.Item label="Absent" value={"0"}  color="black"/>
+                  <Picker.Item label="Not Taken" value={"-1"}  color="black"/>
+                  <Picker.Item label="Present" value={"1"}  color="green"/>
+                  <Picker.Item label="Absent" value={"0"}  color="red"/>
               
                          
                     </Picker>

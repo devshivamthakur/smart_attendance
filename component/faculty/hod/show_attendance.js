@@ -23,7 +23,7 @@ export class show_attendance extends Component {
 
     onPress_semester(faculty_id,sem_id,attendance_status,from_where){
 
-        console.log("faculty_id"+faculty_id)
+        console.log("faculty_id"+attendance_status)
         if(from_where!='0'||from_where!=0){
 
             this.props.navigation.navigate("show_att1",{faculty_id:faculty_id,tag:this.state.tag,tag1:this.state.tag1,branch_id:this.state.branch_id,sem_id:sem_id,attendance_status:attendance_status})

@@ -174,7 +174,6 @@ componentWillUnmount(){
           method:'POST',
           headers:header,
           body:JSON.stringify({
-
             hod_id: Number(hod_id),
             selected_login_type:"info"
           })  

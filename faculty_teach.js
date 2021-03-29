@@ -6,52 +6,39 @@ import  Icon  from 'react-native-vector-icons/Ionicons';
 import  Icon2  from 'react-native-vector-icons/MaterialIcons';
 import  Icon4  from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage  from "@react-native-community/async-storage";  
-import { Avatar } from 'react-native-paper';
 
 import { useRef } from 'react';
 import NetworkUtils from './NetworkUtils';
 import ProgressDialog from 'react-native-progress-dialog';
 import dashboard from './component/faculty/teacher/dashboard';
+import class_branch from "./component/faculty/class_branch";
+import takeattendance from './component/faculty/takeattendance';
+import show_attendance from './component/faculty/hod/show_attendance';
+import show_attendance1 from './component/faculty/show_attendance1';
+import search_student from './component/faculty/search_student';
+import update_student from './component/faculty/hod/update_student';
+
 
 // const drawer;
 const Stack=createStackNavigator();
 // const visible=false;
-export class faculty_hod extends Component {
+export class faculty_teach extends Component {
   constructor(args){
     super(args)
     this.drawer=null;
   } 
   state={
-    visible:false,
-    drawer:"",
-    location:"bhopal",
-    name:"SHIVAM KUMAR",
-    branch:"CSE",
+
+    name:"",
+    branch:"",
     progress_visible:false,
-    profile_uri:null,
-    initialRouteName:"dashboard",
-    verified:false
+ 
   }
   initialize_drawer(){
     const drawer1=useRef(null);
    this. drawer=drawer1;
    }
 
-   componentWillUnmount(){
-
-    this.setState({
-      visible:false,
-      drawer:"",
-      location:"bhopal",
-      name:"",
-      survey_reg_id:"",
-      progress_visible:false,
-      profile_uri:null,
-      initialRouteName:"dashboard",
-      verified:false
-    })
-
-   }
    navigation_view_drawer=()=>(
     <View
     style={{
@@ -86,7 +73,6 @@ export class faculty_hod extends Component {
     >
       <Text style={styles.txt_drawer} >Name:</Text>
       <Text style={styles.txt_drawer} > {this.state.name} </Text>
-      <Icon2 name="verified" size={this.state.verified?20:0} color="yellow"  />
     </View>
     <View
     style={{
@@ -111,17 +97,9 @@ export class faculty_hod extends Component {
        />
      <Text style={styles.txt5} > Profile </Text>
     </Pressable>
-    <View
-    style={{
-      flexDirection:"row",
-      marginLeft:10
-    }}
-    >
-     <Icon2  name="contact-support" color="black" size={25}  style={{marginTop:4}}/>
-     <Text style={styles.txt5}> Support </Text>
-    </View>
    
-    <View
+   
+    <Pressable
     style={{
      flexDirection:"row",
     position: 'absolute',
@@ -152,7 +130,7 @@ export class faculty_hod extends Component {
         width:"85%"
       }}
       >Logout</Text>
-    </View>
+    </Pressable>
   
     </View>
   )
@@ -166,49 +144,61 @@ componentWillUnmount(){
       name:"",
       branch:"",
       // initialRouteName:"dashboard"
+      progress_visible:false,
     }
   )
 }
 
 
   //getting survey details like name,survey registration details 
- async get_survey_details(){
+ async get_hod_details(){
   
   this.setState(
     {
-      survey_reg_id:await AsyncStorage.getItem("survey_reg_id"),
+      hod_id:await AsyncStorage.getItem("hod_id"),
     }
   )
   const isConnected = await NetworkUtils.isNetworkAvailable();
   // const isConnected =false;
   if(isConnected){
-      var servey_id=await AsyncStorage.getItem("servey_id");
-      // console.log("id"+servey_id);
-      // var insertAPIURL="https://unimportuned-dozens.000webhostapp.com//faculty_hod_db/get_all_survey_data.php";
-      var  insertAPIURL="http://government.crtd.in/android/phpdb/faculty_hod_db/get_all_survey_data.php";
+      var hod_id=await AsyncStorage.getItem("hod_id");
 
-      var header={
+    var  insertAPIURL="https://unimportuned-dozens.000webhostapp.com/faculty/user_registration.php";
+
+       var header={
         'Accept':'application/json',
         'Content-Type':'application/json'
       };
-      
-      fetch(insertAPIURL,{
+       
+      fetch(insertAPIURL,{ 
           method:'POST',
           headers:header,
           body:JSON.stringify({
 
-              servey_id: Number(servey_id),
-          })
-      }
+            hod_id: Number(hod_id),
+            selected_login_type:"info"
+          })  
+      } 
       ).then((response)=>response.json())
       .then((response)=>{
-            // console.log(response)
-            if(response[0]!="not"){
+            console.log(response)
+            this.setState({
+              progress_visible:false
+            })
+            if(response.length!=0){
 
+              AsyncStorage.setItem("branch_name",response.branch);
+              AsyncStorage.setItem("branch_id",String(response.branch_id));
+              this.setState(
+                {
+                  name:response.name,
+                  branch:response.branch
+                }
+              )
          
             }
       }).catch((error)=>{
-          // console.log(error)
+          console.log(error)
           this.setState({
             progress_visible:false
           })
@@ -223,33 +213,21 @@ componentWillUnmount(){
      }
   //logout 
   logout_fun(){
-   
-            this.props.navigation.replace("Login");
+    AsyncStorage.setItem("sft","yes");  //set data
+    AsyncStorage.setItem("lt","Login");
+    AsyncStorage.removeItem("hod_id");
+           this.props.navigation.replace("Login");
   }
 
   componentDidMount(){
-    // this.setState({
-    //   progress_visible:true
-    // })
-    // this.get_survey_details()
+    this.setState({
+      progress_visible:true
+    })
+    this.get_hod_details()
   }
  
   //side menu and icon
-side_menu =()=>{
-  let _menu = null;
-  return(
-      <View
-      style={{
-        flexDirection:'row',
-      //   backgroundColor:'red',
-      margin:5   
-      }}
-      >
-        <Avatar.Image size={50} source={require("./images/main_logo.jpg")} onTouchStart={()=>{this.refs['DRAWER'].openDrawer();}} />
-     
-     </View>   
-  );
-}
+
 
  
     left_menu=()=>{
@@ -277,21 +255,21 @@ side_menu =()=>{
              ref={'DRAWER'}
             drawerPosition={"left"}
             renderNavigationView={this.navigation_view_drawer}
-            
+            style={{ flex: 1 }}
             >
                <ProgressDialog visible={this.state.progress_visible} />
             <NavigationContainer
            independent={true}
            >
               <Stack.Navigator
-              initialRouteName="dashboard_teach"
-              
+              initialRouteName="dashboard_fc"
               >
+                   
                   <Stack.Screen
-                  name="dashboard_teach"
+                  name="dashboard_fc"
                   component={dashboard}
+                  
                   options={{
-                    headerRight:()=>(<this.side_menu/>),
                     headerStyle:{
                       backgroundColor:'#005a9e'
                     },
@@ -301,12 +279,109 @@ side_menu =()=>{
                       width:100,
                       fontSize:16
                     },
+                    title:"Dashboard",
                     headerLeft:()=>(<this.left_menu/>),
                     
                   }}
-                  />  
-                  
-             
+                  />
+ 
+ <Stack.Screen
+                  name="class_branch"
+                  component={class_branch}
+                  options={{
+                    title:"Class and Branch",
+                    headerStyle:{
+                      backgroundColor:'#bc5100'
+                    },
+                    headerTitleStyle:{
+                      fontWeight:'bold',
+                      color:"white",
+                      // width:100,
+                      fontSize:16
+                    },
+                  }}
+                  />
+                 
+                  <Stack.Screen
+                  name="take_at"
+                  component={takeattendance}
+                  options={{
+                    title:"Take Attendance",
+                    headerStyle:{
+                      backgroundColor:'#bc5100'
+                    },
+                    headerTitleStyle:{
+                      fontWeight:'bold',
+                      color:"white",
+                      // width:100,
+                      fontSize:16
+                    },
+                  }}
+                   />
+                  <Stack.Screen
+                  name="show_att"
+                  component={show_attendance}
+                  options={{
+                    title:"show Attendance",
+                    headerStyle:{
+                      backgroundColor:'#bc5100'
+                    },
+                    headerTitleStyle:{
+                      fontWeight:'bold',
+                      color:"white",
+                      // width:100,
+                      fontSize:16
+                    },
+                  }}
+                   />
+                 <Stack.Screen
+                  name="show_att1"
+                  component={show_attendance1}
+                  options={{
+                    title:"show Attendance",
+                    headerStyle:{
+                      backgroundColor:'#bc5100'
+                    },
+                    headerTitleStyle:{
+                      fontWeight:'bold',
+                      color:"white",
+                      // width:100,
+                      fontSize:16
+                    },
+                  }}
+                   />
+                    <Stack.Screen
+                  name="search_student"
+                  component={search_student}
+                  options={{
+                    title:"Search Student",
+                    headerStyle:{
+                      backgroundColor:'#bc5100'
+                    },
+                    headerTitleStyle:{
+                      fontWeight:'bold',
+                      color:"white",
+                      // width:100,
+                      fontSize:16
+                    },
+                  }}
+                   />
+                    <Stack.Screen
+                  name="update_student"
+                  component={update_student}
+                  options={{
+                    title:"Update Student",
+                    headerStyle:{
+                      backgroundColor:'#bc5100'
+                    },
+                    headerTitleStyle:{
+                      fontWeight:'bold',
+                      color:"white",
+                      // width:100,
+                      fontSize:16
+                    },
+                  }}
+                   />
               </Stack.Navigator>
              
            </NavigationContainer>
@@ -359,4 +434,4 @@ const styles=StyleSheet.create(
       }
     }
   )
-export default faculty_hod
+export default faculty_teach

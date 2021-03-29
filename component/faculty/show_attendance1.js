@@ -248,8 +248,7 @@ return(
                   radio_props={this.radio_props}
                   initial={this.state.attendance_status}
                   formHorizontal={true}
-                  // labelColor="yellow"
-                  // buttonColor="yellow"
+                  
                   onPress={(value) => {}}
 
 

@@ -72,100 +72,14 @@ componentWillUnmount() {
   
   
   async onPress_continue(){
-    const isConnected = await NetworkUtils.isNetworkAvailable();
-    if(isConnected){
-            if(this.state.branch_id.trim().length==0){
-                alert("Please Select Branch")
-
-            }else if(this.state.sem_id.trim().length==0){
-                alert("Please Select Semester")
-
+      var tag="";
+                if(this.state.branch_id=='1'||this.state.branch_id=='2'){
+                    tag="MIT_Student_info";
             }else{
-                this.setState(
-                    {
-                        progress_visible:true
-                    }
-                )
-                var st=new Date();
-              var day= String( st.getDate());  
-              var month=String( st.getMonth()+1 );  
-              var year= String(st.getFullYear()); 
-              if(month.length==1){
-                  month="0"+month;
-              }
-              if(day.length==1){
-                  day="0"+day;
-              }
-        //   //  var start_date=day+"/"+month+"/"+year;
-           var start_date= year+"-"+month+"-"+day;
-    
-                // alert(this.state.sem_id+" "+this.state.branch_id)
-                var     insertAPIURL="https://unimportuned-dozens.000webhostapp.com/faculty/attendance_data.php";
-    
-                var header={
-                    'Accept':'application/json',
-                    'Content-Type':'application/json'
-                  };
-           fetch(insertAPIURL,{
-               method:'POST',
-               headers:header,
-               body:JSON.stringify({
-                branch_id: this.state.branch_id,
-                sem_id:this.state.sem_id,
-                date:start_date
-               })
-           }  
-           ).then((response)=>response.json())
-           .then((response)=>{
-            //   response.attendance_s tatus="";
-            console.log(response+"dv")
-     
-            //        
-              if(response!=null||response.length!=0){
-                  if(response[0].mess=="present"){
-
-                    alert("this branch and semester attendance has already taken")
-
-                  }else if(response[0].mess=="s"){
-                    var tag="";
-
-                    if(this.state.branch_id=='1'||this.state.branch_id=='2'){
-                            tag="MIT_Student_info";
-                    }else{
-                        tag="MITS_Student_info";
-                    }
-                    this.props.navigation.navigate("take_at",{branch_id:this.state.branch_id,sem_id:this.state.sem_id,tag:tag})
-                
-                  }else{
-
-                     ToastAndroid.show("serve problem",ToastAndroid.LONG);
-
-                  }
-               
-               
-              }
-               
-              this.setState(
-                {
-                    progress_visible:false,
-                    
-                }
-            )
-    
-           }).catch((error)=>{
-               console.log("error from total survey:"+error);
-               this.setState(
-                {
-                    progress_visible:false
-                }
-            )
-           })
-              
+                tag="MITS_Student_info";
             }
+            this.props.navigation.navigate("take_at",{branch_id:this.state.branch_id,sem_id:this.state.sem_id,tag:tag})
 
-    }else{
-        ToastAndroid.show("Internet is required")
-    }
    }
     render() {
        
